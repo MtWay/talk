@@ -1,64 +1,79 @@
 # 部署指南
 
-## 方案: Render 全栈部署
+## 方案: Railway 全栈部署（推荐 ⭐）
+
+Railway 提供免费额度，不需要信用卡，部署简单。
 
 ### 1. 准备工作
 
-- 注册 [Render](https://render.com) 账号（免费）
-- 将代码推送到 GitHub/GitLab
+- 注册 [Railway](https://railway.app) 账号（用 GitHub 登录）
+- 确保代码已推送到 GitHub
 
-### 2. 部署步骤
+### 2. 部署后端服务
 
-#### 后端部署
+1. 访问 [railway.app](https://railway.app)
+2. 点击 **"New Project"**
+3. 选择 **"Deploy from GitHub repo"**
+4. 选择你的仓库 `MtWay/talk`
+5. 点击 **"Add Variables"** 添加环境变量：
+   ```
+   OPENAI_API_KEY=sk-3db040068eb3452aacf7a453327f2e80
+   OPENAI_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+   OPENAI_MODEL=qwen-turbo
+   CORS_ORIGIN=*
+   ```
+6. 点击 **"Deploy"**
+7. 等待部署完成（约 2-3 分钟）
 
-1. 在 Render Dashboard 点击 "New +" → "Web Service"
-2. 连接你的 Git 仓库
-3. 配置如下:
-   - **Name**: talk-server
-   - **Runtime**: Node
-   - **Build Command**: `cd server && npm install && npm run build`
-   - **Start Command**: `cd server && npm start`
-4. 添加环境变量:
-   - `OPENAI_API_KEY`: 你的阿里通义千问 API Key
-   - `OPENAI_BASE_URL`: `https://dashscope.aliyuncs.com/compatible-mode/v1`
-   - `OPENAI_MODEL`: `qwen-turbo`
-   - `CORS_ORIGIN`: `*` (或你的前端域名)
-5. 点击 "Create Web Service"
+### 3. 获取后端地址
 
-#### 前端部署
+部署完成后：
+1. 点击服务名称
+2. 在 **"Settings"** → **"Public Networking"** 中生成域名
+3. 复制域名，例如：`https://talk-server-production.up.railway.app`
+4. 后端 API 地址为：`https://talk-server-production.up.railway.app/api`
 
-1. 在 Render Dashboard 点击 "New +" → "Static Site"
-2. 连接同一个 Git 仓库
-3. 配置如下:
-   - **Name**: talk-client
-   - **Build Command**: `cd client && npm install && npm run build`
-   - **Publish Directory**: `client/dist`
-4. 添加环境变量:
-   - `VITE_API_BASE_URL`: `https://talk-server-xxxxx.onrender.com/api` (你的后端地址)
-5. 点击 "Create Static Site"
+### 4. 部署前端服务
 
-### 3. 访问应用
+1. 在同一个 Railway 项目中，点击 **"Create Service"**
+2. 选择 **"Empty Service"** → 改名为 `talk-client`
+3. 点击 **"Settings"** → **"Source"**
+4. 选择 **"GitHub Repo"** → 选择 `MtWay/talk`
+5. 配置：
+   - **Root Directory**: `client`
+   - **Build Command**: `npm install && npm run build`
+   - **Start Command**: `npx serve -s dist -l $PORT`
+6. 添加环境变量：
+   ```
+   VITE_API_BASE_URL=https://talk-server-production.up.railway.app/api
+   ```
+7. 点击 **"Deploy"**
 
-- 前端: `https://talk-client-xxxxx.onrender.com`
-- 后端: `https://talk-server-xxxxx.onrender.com/api`
+### 5. 生成前端域名
 
-### 4. 注意事项
+1. 点击前端服务
+2. **"Settings"** → **"Public Networking"**
+3. 点击 **"Generate Domain"**
+4. 获得前端地址，例如：`https://talk-client-production.up.railway.app`
 
-- Render 免费版有休眠机制，首次访问可能需要等待 30 秒唤醒
-- 确保后端先部署完成，再部署前端
-- 前端环境变量需要在构建时设置
+### 6. 完成！
+
+- 前端: `https://talk-client-production.up.railway.app`
+- 后端: `https://talk-server-production.up.railway.app/api`
+
+手机可以直接访问前端地址使用！
 
 ---
 
-## 备选方案: Railway
+## 备选方案
 
-Railway 部署步骤类似，也支持 `render.yaml` 配置文件一键部署。
+### 方案 2: Vercel + Railway 后端
+- 前端部署到 Vercel（更快）
+- 后端使用 Railway
 
-1. 注册 [Railway](https://railway.app)
-2. 导入 Git 仓库
-3. 自动识别 `render.yaml` 配置
-4. 添加环境变量
-5. 部署完成
+### 方案 3: Cloudflare Tunnel（当前方案）
+- 后端: `https://slight-gmc-encryption-yoga.trycloudflare.com/api`
+- 前端: 需要单独部署
 
 ---
 
