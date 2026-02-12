@@ -1,19 +1,8 @@
-# 使用 Node.js 官方镜像
 FROM node:20-alpine
-
-# 设置工作目录
-WORKDIR /app
-
-# 复制 server 目录
-COPY server/ ./server/
-
-# 安装依赖并构建
 WORKDIR /app/server
+COPY server/package*.json ./
 RUN npm install
+COPY server/ ./
 RUN npm run build
-
-# 暴露端口
 EXPOSE 3000
-
-# 启动命令
 CMD ["node", "dist/app.js"]
