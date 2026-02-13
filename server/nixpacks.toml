@@ -1,0 +1,16 @@
+[phases]
+
+[phases.setup]
+aptPkgs = ["curl", "wget", "unzip"]
+
+[phases.build]
+cmds = ["npm install", "npm run build"]
+
+[phases.start]
+cmds = ["node dist/app.js"]
+
+[builders]
+builders = ["node"]
+
+[vars]
+NODE_VERSION = "20"
