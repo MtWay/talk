@@ -1,0 +1,26 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "services": [
+    {
+      "name": "talk-client",
+      "rootDir": "./client",
+      "buildCommand": "npm install && npm run build",
+      "startCommand": "npx serve -s dist -l $PORT",
+      "env": {
+        "VITE_API_BASE_URL": "${{ talk-server.PUBLIC_URL }}/api"
+      }
+    },
+    {
+      "name": "talk-server",
+      "rootDir": "./server",
+      "buildCommand": "npm install && npm run build",
+      "startCommand": "node dist/app.js",
+      "env": {
+        "OPENAI_API_KEY": "sk-3db040068eb3452aacf7a453327f2e80",
+        "OPENAI_BASE_URL": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "OPENAI_MODEL": "qwen-turbo",
+        "CORS_ORIGIN": "*"
+      }
+    }
+  ]
+}
